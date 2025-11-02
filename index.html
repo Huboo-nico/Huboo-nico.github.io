@@ -654,20 +654,7 @@
             document.documentElement.lang = currentLang;
         }
 
-        // Inicializar clases CSS para las imágenes
-        function initImageClasses() {
-            const canalesImg = document.querySelector('#upload-canales img');
-            const dashboardImg = document.querySelector('#upload-dashboard img');
-            
-            // Verificar si las imágenes cargan correctamente
-            if (canalesImg && canalesImg.complete && canalesImg.naturalWidth > 0) {
-                canalesImg.parentElement.classList.add('has-image');
-            }
-            
-            if (dashboardImg && dashboardImg.complete && dashboardImg.naturalWidth > 0) {
-                dashboardImg.parentElement.classList.add('has-image');
-            }
-        }
+        
 
         // ========================================
         // CONFIGURACIÓN DE CONTACTO - SIMPLE
@@ -766,6 +753,7 @@
 </body>
 
 </html>
+
 
 
 
