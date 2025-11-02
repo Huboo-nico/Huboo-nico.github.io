@@ -396,12 +396,7 @@
                         <!-- Imagen desde archivo local -->
                         <img src="media/apps.png" alt="Imagen de canales de venta" class="image-preview" onerror="this.style.display='none'; this.parentElement.classList.remove('has-image'); document.getElementById('placeholder-canales').style.display='flex';">
                         
-                        <!-- Placeholder cuando no hay imagen -->
-                        <div class="upload-placeholder" id="placeholder-canales">
-                            <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-                            </svg>
-                        </div>
+                    
                         
                         <!-- Contenido original siempre visible -->
                         <div class="upload-content">
@@ -424,6 +419,7 @@
                     
                     <!-- 2. Huboo Logo (Centro) -->
                     <div class="integration-box p-8 bg-huboo-primary rounded-3xl shadow-2xl shadow-huboo-primary/70 min-h-[160px] flex flex-col justify-center transition duration-500 hover:scale-110 items-center">
+                        
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-white" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                         </svg>
@@ -443,13 +439,7 @@
                         <!-- Imagen desde archivo local -->
                         <img src="media/dashboard.png" alt="Imagen del dashboard" class="image-preview" onerror="this.style.display='none'; this.parentElement.classList.remove('has-image'); document.getElementById('placeholder-dashboard').style.display='flex';">
                         
-                        <!-- Placeholder cuando no hay imagen -->
-                        <div class="upload-placeholder" id="placeholder-dashboard">
-                            <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-                            </svg>
-                            <div class="upload-text" data-key="upload_text">📁 Coloca tu imagen aquí<br><small>media/dashboard.png</small></div>
-                        </div>
+                    
                         
                         <!-- Contenido original siempre visible -->
                         <div class="upload-content">
@@ -776,4 +766,5 @@
 </body>
 
 </html>
+
 
