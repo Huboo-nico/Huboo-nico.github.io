@@ -653,10 +653,9 @@
             // Cambiar atributo lang del HTML
             document.documentElement.lang = currentLang;
         }
-        // Inicializar clases CSS para las imágenes
-        function initImageClasses() {
-            const canalesImg = document.querySelector('#upload-canales img');
-            const dashboardImg = document.querySelector('#upload-dashboard img');
+        // AÑADE LA CLASE SIEMPRE, SIN VERIFICACIÓN
+        canalesImg.parentElement.classList.add('has-image');
+        dashboardImg.parentElement.classList.add('has-image');
             
             
         }
@@ -760,6 +759,7 @@
 </body>
 
 </html>
+
 
 
 
