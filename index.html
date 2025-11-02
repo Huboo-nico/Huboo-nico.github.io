@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Huboo - Logística</title>
+    <link rel="icon" href="logohuboo.svg">
+    <!-- Coloca aquí tu etiqueta <link rel="icon" href="/favicon.ico"> -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Definición de la fuente y estilos base */
+        :root {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #eee6f8; /* huboo-light */
+            color: #141314; /* huboo-dark */
+        }
+        .container {
+            max-width: 1280px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Estilos personalizados para animaciones de scroll (Scroll Reveal) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Estilos para el diagrama de integración */
+        .integration-box {
+            position: relative;
+        }
+        
+        /* Estilos mejorados para el botón de traducción */
+        .lang-toggle {
+            position: fixed;
+            top: 50%;
+            right: -80px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            background: linear-gradient(135deg, #6b4cbb, #58c4c8);
+            color: white;
+            padding: 15px 10px;
+            border-radius: 12px 0 0 12px;
+            cursor: pointer;
+            transition: right 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: -4px 0 20px rgba(107, 76, 187, 0.3);
+            font-weight: bold;
+            font-size: 12px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lang-toggle:hover {
+            right: 0;
+            box-shadow: -8px 0 30px rgba(107, 76, 187, 0.5);
+        }
+        .lang-toggle:active {
+            right: -5px;
+        }
+
+        /* Estilos para los placeholders de imagen */
+        .image-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: inherit;
+            display: none;
+        }
+        
+        /* Estilos para placeholder cuando no hay imagen */
+        .upload-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: rgba(107, 76, 187, 0.1);
+            border: 2px dashed #6b4cbb;
+            border-radius: inherit;
+            color: #6b4cbb;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .upload-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 8px;
+            fill: currentColor;
+        }
+        
+        .upload-text {
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        /* Mostrar imagen si existe */
+        .has-image .image-preview {
+            display: block;
+        }
+        
+        .has-image .upload-placeholder {
+            display: none;
+        }
+        
+        /* Estilos para iconos de contacto */
+        #whatsapp-icon img,
+        #email-icon img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            border-radius: 50%;
+            display: block;
+        }
+        
+        /* Asegurar que el hover funcione en los iconos */
+        #whatsapp-icon:hover img,
+        #email-icon:hover img {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+        
+        /* Iconos configurables */
+        .configurable-icon {
+            display: none;
+        }
+        .whatsapp-icon {
+            fill: #25D366;
+        }
+        .email-icon {
+            fill: #6b4cbb;
+        }
+        
+        /* Mejoras responsive */
+        @media (max-width: 640px) {
+            .integration-flow {
+                flex-direction: column !important;
+            }
+            .integration-arrow {
+                transform: rotate(90deg);
+            }
+            .lang-toggle {
+                right: -70px;
+                padding: 12px 8px;
+                font-size: 10px;
+                min-height: 100px;
+            }
+        }
+        
+        /* Animaciones suaves */
+        .smooth-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Pulse animation for contact icons */
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+            }
+        }
+        
+        .whatsapp-pulse {
+            animation: pulse-ring 2s infinite;
+        }
+        
+        @keyframes email-pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(107, 76, 187, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(107, 76, 187, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(107, 76, 187, 0);
+            }
+        }
+        
+        .email-pulse {
+            animation: email-pulse 2s infinite 0.5s;
+        }
+    </style>
+    <script>
+        // Configuración de Tailwind con la paleta de colores
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'huboo-primary': '#6b4cbb',
+                        'huboo-dark': '#141314',
+                        'huboo-light': '#eee6f8',
+                        'huboo-accent': '#58c4c8',
+                        'huboo-mid1': '#9190cd',
+                        'huboo-mid2': '#8c73c5',
+                        'huboo-darker1': '#493877',
+                        'huboo-darker2': '#342458',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Botón de Traducción Mejorado -->
+    <div class="lang-toggle" id="langToggle" title="Cambiar idioma / Change language">
+        <div class="flex flex-col items-center">
+            <span id="langFlag">🇪🇸</span>
+            <span id="langText" class="mt-1">ES</span>
+        </div>
+    </div>
+
+    <!-- Iconos de Contacto Fijos (Responsive) -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col space-y-4">
+        <!-- WhatsApp - Imagen PNG Local -->
+        <div class="integration-box p-3 bg-white rounded-full shadow-2xl transition duration-300 ease-in-out hover:scale-110 whatsapp-pulse" id="whatsapp-icon">
+            <img src="media/whatsapp.png" alt="WhatsApp" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="upload-placeholder" style="display:none; align-items: center; justify-content: center; height: 48px; width: 48px; background-color: #f3f4f6; border-radius: 50%;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" fill="#25D366"/>
+                </svg>
+                <div class="text-center mt-1">
+                    <p class="text-xs font-semibold text-gray-600">Coloca tu imagen aquí:</p>
+                    <code class="text-xs bg-gray-200 px-2 py-1 rounded">media/whatsapp.png</code>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Email - Imagen PNG Local -->
+        <div class="integration-box p-3 bg-white rounded-full shadow-2xl transition duration-300 ease-in-out hover:scale-110 email-pulse" id="email-icon">
+            <img src="media/email.png" alt="Email" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="upload-placeholder" style="display:none; align-items: center; justify-content: center; height: 48px; width: 48px; background-color: #f3f4f6; border-radius: 50%;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="#6b4cbb"/>
+                </svg>
+                <div class="text-center mt-1">
+                    <p class="text-xs font-semibold text-gray-600">Coloca tu imagen aquí:</p>
+                    <code class="text-xs bg-gray-200 px-2 py-1 rounded">media/email.png</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Encabezado Fijo con Navegación -->
+    <header class="sticky top-0 z-40 bg-huboo-light/95 backdrop-blur-sm shadow-md py-4 transition duration-300">
+        <div class="container flex justify-between items-center px-4 md:px-6">
+            <!-- Logo/Icono Placeholder -->
+            <a href="#inicio" class="text-2xl font-black text-huboo-darker2 flex items-center space-x-2">
+                <!-- Placeholder para Icono -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-huboo-primary" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15.93V14h2v3.93c3.08-.87 5.34-3.71 5.34-7.43 0-4.14-3.36-7.5-7.5-7.5s-7.5 3.36-7.5 7.5c0 3.72 2.26 6.56 5.34 7.43z"/>
+                </svg>
+                <span class="hidden sm:inline">Nicolas Coronel</span>
+                <span class="sm:hidden">Nicolas</span>
+            </a>
+
+            <!-- Menú de Navegación (Desktop) -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="#inicio" class="text-huboo-dark hover:text-huboo-primary transition duration-200 font-semibold" data-key="nav_inicio">Inicio</a>
+                <a href="#integracion" class="text-huboo-dark hover:text-huboo-primary transition duration-200 font-semibold" data-key="nav_integracion">Integración</a>
+                <a href="#recepcion" class="text-huboo-dark hover:text-huboo-primary transition duration-200 font-semibold" data-key="nav_recepcion">Recepción</a>
+                <a href="#preparacion" class="text-huboo-dark hover:text-huboo-primary transition duration-200 font-semibold" data-key="nav_preparacion">Preparación</a>
+                <a href="#envio" class="text-huboo-dark hover:text-huboo-primary transition duration-200 font-semibold" data-key="nav_envio">Envío</a>
+                <a href="https://huboo.com/es/logistica-ecommerce/casos-de-exito/" target="_blank" class="bg-huboo-accent text-huboo-dark py-2 px-4 text-sm font-bold rounded-full shadow-md hover:bg-huboo-primary hover:text-white transition duration-300" data-key="nav_casos">
+                    Casos de Éxito
+                </a>
+            </nav>
+
+            <!-- Botón Hamburguesa (Mobile) -->
+            <button id="menu-button" class="md:hidden p-2 rounded-full text-huboo-dark hover:bg-huboo-mid1/10 transition duration-200" aria-label="Abrir menú">
+                <!-- Icono de Menú (SVG) -->
+                <svg id="menu-icon-open" class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <!-- Icono de Cerrar (SVG) -->
+                <svg id="menu-icon-close" class="h-6 w-6 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Menú Mobile Desplegable -->
+        <nav id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-2 bg-huboo-light">
+            <a href="#inicio" class="block py-2 px-3 rounded-md text-huboo-dark hover:bg-huboo-primary hover:text-white transition duration-200 font-medium" data-key="nav_inicio">Inicio</a>
+            <a href="#integracion" class="block py-2 px-3 rounded-md text-huboo-dark hover:bg-huboo-primary hover:text-white transition duration-200 font-medium" data-key="nav_integracion">Integración</a>
+            <a href="#recepcion" class="block py-2 px-3 rounded-md text-huboo-dark hover:bg-huboo-primary hover:text-white transition duration-200 font-medium" data-key="nav_recepcion">Recepción</a>
+            <a href="#preparacion" class="block py-2 px-3 rounded-md text-huboo-dark hover:bg-huboo-primary hover:text-white transition duration-200 font-medium" data-key="nav_preparacion">Preparación</a>
+            <a href="#envio" class="block py-2 px-3 rounded-md text-huboo-dark hover:bg-huboo-primary hover:text-white transition duration-200 font-medium" data-key="nav_envio">Envío</a>
+            <a href="https://huboo.com/es/logistica-ecommerce/casos-de-exito/" target="_blank" class="block py-2 px-3 rounded-md bg-huboo-accent text-huboo-dark text-center font-bold hover:bg-huboo-primary hover:text-white transition duration-300" data-key="nav_casos">
+                Casos de Éxito
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="inicio" class="min-h-screen flex items-center pt-24 pb-16 bg-huboo-light">
+            <div class="container px-6 grid grid-cols-1 lg:grid-cols-3 gap-10 items-center">
+                
+                <!-- Columna de Texto Principal (2/3 de ancho en LG) -->
+                <div class="lg:col-span-2 text-center lg:text-left reveal">
+                    <h1 class="text-6xl md:text-8xl font-black text-huboo-darker2 leading-tight mb-6">
+                        <span data-key="hero_title_1">Logística</span> <span class="text-huboo-primary" data-key="hero_title_2">Inteligente</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl max-w-4xl lg:max-w-none mx-auto lg:mx-0 text-huboo-darker1 mb-10">
+                        <strong class="font-bold">Huboo</strong> <span data-key="hero_subtitle_1">proporciona servicios de cumplimiento logístico de principio a fin para negocios de e-commerce. Conectamos tu tienda online a nuestra red de centros, manejando el almacenamiento, la preparación y el envío, permitiéndote</span> <strong class="text-huboo-accent" data-key="hero_subtitle_2">escalar sin límites.</strong>
+                    </p>
+                    <a href="#integracion" class="inline-block bg-huboo-primary text-white py-3 px-8 text-lg font-semibold rounded-full shadow-lg shadow-huboo-primary/50 hover:bg-huboo-darker2 transition duration-300 transform hover:scale-105" data-key="hero_cta">
+                        Ver Nuestro Proceso
+                    </a>
+                </div>
+
+                <!-- Columna de Imágenes (1/3 de ancho en LG) -->
+                <div class="lg:col-span-1 flex flex-col items-center space-y-8 reveal">
+                    
+                    <!-- Foto de Perfil (Con enlace a LinkedIn) -->
+                    <a href="https://www.linkedin.com/in/nicolasjuancoronel" target="_blank" 
+                       class="p-4 bg-white rounded-full shadow-xl shadow-huboo-primary/30 w-48 h-48 flex items-center justify-center transition duration-500 hover:scale-105 hover:shadow-huboo-primary/50 smooth-hover relative">
+                        <img src="perfil.png"
+                            alt="Foto de perfil de Nicolas Coronel - LinkedIn"
+                            class="w-full h-full rounded-full object-cover border-4 border-huboo-accent"
+                            onerror="this.onerror=null;this.src='https://placehold.co/180x180/6b4cbb/eee6f8?text=NICOLAS+CORONEL'"
+                        >
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 bg-huboo-primary/20 rounded-full transition-opacity duration-300">
+                            <span class="text-white font-semibold text-sm bg-huboo-primary px-2 py-1 rounded-full">LinkedIn</span>
+                        </div>
+                    </a>
+
+                    <!-- Foto de la Nave (Con enlace a Google Maps) -->
+                    <a href="https://maps.app.goo.gl/YLLd1YFuPxkaN7Pb7" target="_blank"
+                       class="p-3 bg-huboo-darker2 rounded-2xl shadow-2xl shadow-huboo-darker2/50 w-full max-w-xs transition duration-500 hover:scale-105 hover:shadow-huboo-accent/50 smooth-hover relative">
+                        <img src="nave.jpg"
+                            alt="Foto de la nave o almacén logístico - Ver ubicación en Google Maps"
+                            class="w-full h-auto rounded-xl object-cover transform transition duration-500 hover:rotate-1"
+                            onerror="this.onerror=null;this.src='https://placehold.co/400x300/342458/58c4c8?text=UBICACION+HUBOO'"
+                        >
+                        <p class="mt-2 text-xs text-huboo-mid1 text-center" data-key="nave_description">Nuestro centro logístico, tu nuevo almacén.</p>
+                        <div class="absolute top-2 right-2 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                            <svg class="w-6 h-6 text-white bg-huboo-accent rounded-full p-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+        
+
+        <!-- 2. SECCIÓN INTEGRACIÓN -->
+        <section id="integracion" class="py-20 md:py-32 bg-huboo-dark">
+            <div class="container px-6 text-white text-center">
+                <h2 class="text-4xl font-extrabold text-huboo-accent mb-6 reveal" data-key="integracion_title">Integración Perfecta</h2>
+                <p class="text-xl max-w-3xl mx-auto text-huboo-mid1 mb-16 reveal" data-key="integracion_subtitle">
+                    Nos integramos sin esfuerzo con las plataformas que ya utilizas. Tus pedidos llegan a nuestro sistema de forma automática, listos para ser procesados.
+                </p>
+
+                <!-- Diagrama de Integración (Responsive Flex Row) -->
+                <div class="integration-flow flex flex-col md:flex-row gap-6 md:gap-10 items-center justify-center reveal">
+
+                    <!-- 1. Tus Canales (Origen Consolidado) - CON IMAGEN LOCAL -->
+                    <div class="integration-box p-6 bg-huboo-darker2 rounded-3xl shadow-lg transition duration-300 hover:scale-[1.05] hover:shadow-huboo-primary/50 min-h-[160px] flex flex-col justify-center items-center w-full md:w-auto" id="upload-canales">
+                        <!-- Imagen desde archivo local -->
+                        <img src="media/apps.png" alt="Imagen de canales de venta" class="image-preview" onerror="this.style.display='none'; this.parentElement.classList.remove('has-image'); document.getElementById('placeholder-canales').style.display='flex';">
+                        
+                        <!-- Placeholder cuando no hay imagen -->
+                        <div class="upload-placeholder" id="placeholder-canales">
+                            <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                            </svg>
+                        </div>
+                        
+                        <!-- Contenido original siempre visible -->
+                        <div class="upload-content">
+                            <h3 class="text-xl font-bold text-huboo-light mb-4" data-key="integracion_canales_title">Canales de Venta</h3>
+                            <div class="flex space-x-3 text-sm font-semibold text-huboo-accent">
+                                <span class="p-2 bg-huboo-darker1 rounded-lg">Shopify</span>
+                                <span class="p-2 bg-huboo-darker1 rounded-lg">WooCommerce</span>
+                                <span class="p-2 bg-huboo-darker1 rounded-lg">TikTok</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flecha 1 -->
+                    <div class="flex flex-col items-center justify-center">
+                        <p class="text-huboo-mid1 text-sm mb-1 hidden md:block" data-key="integracion_flecha_1">Pedidos Automáticos</p>
+                        <svg class="integration-arrow w-8 h-8 md:w-10 md:h-10 text-huboo-accent rotate-90 md:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </div>
+                    
+                    <!-- 2. Huboo Logo (Centro) -->
+                    <div class="integration-box p-8 bg-huboo-primary rounded-3xl shadow-2xl shadow-huboo-primary/70 min-h-[160px] flex flex-col justify-center transition duration-500 hover:scale-110 items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-white" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                        <p class="mt-2 font-black text-2xl text-white">HUBOO tech</p>
+                    </div>
+
+                    <!-- Flecha 2 -->
+                    <div class="flex flex-col items-center justify-center">
+                        <p class="text-huboo-mid1 text-sm mb-1 hidden md:block" data-key="integracion_flecha_2">Información y Stock</p>
+                        <svg class="integration-arrow w-8 h-8 md:w-10 md:h-10 text-huboo-accent rotate-90 md:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </div>
+
+                    <!-- 3. Dashboard (Destino) - CON IMAGEN LOCAL -->
+                    <div class="integration-box p-8 bg-huboo-darker1 rounded-3xl shadow-lg transition duration-300 hover:scale-[1.05] hover:shadow-huboo-accent/70 min-h-[180px] flex flex-col justify-center items-center w-full md:w-auto" id="upload-dashboard">
+                        <!-- Imagen desde archivo local -->
+                        <img src="media/dashboard.png" alt="Imagen del dashboard" class="image-preview" onerror="this.style.display='none'; this.parentElement.classList.remove('has-image'); document.getElementById('placeholder-dashboard').style.display='flex';">
+                        
+                        <!-- Placeholder cuando no hay imagen -->
+                        <div class="upload-placeholder" id="placeholder-dashboard">
+                            <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                            </svg>
+                            <div class="upload-text" data-key="upload_text">📁 Coloca tu imagen aquí<br><small>media/dashboard.png</small></div>
+                        </div>
+                        
+                        <!-- Contenido original siempre visible -->
+                        <div class="upload-content">
+                            
+                            <h3 class="mt-2 text-2xl font-black text-huboo-light" data-key="integracion_dashboard_title">Tu Dashboard</h3>
+                            <p class="text-base text-huboo-mid1 mt-1 font-semibold text-center" data-key="integracion_dashboard_subtitle">Stock y Tracking en Tiempo Real</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SECCIÓN RECEPCIÓN -->
+        <section id="recepcion" class="py-20 md:py-32 bg-huboo-light">
+            <div class="container px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="reveal">
+                    <h2 class="text-4xl font-extrabold text-huboo-darker2 mb-6" data-key="recepcion_title">Recepción y Almacenamiento</h2>
+                    <p class="text-lg text-huboo-darker1 mb-6" data-key="recepcion_subtitle">
+                        Una vez que tus productos llegan a nuestros Hubs, comienza la magia. Nos encargamos de la inspección, el inventario y el almacenamiento seguro, asegurando que todo esté listo para la operación.
+                    </p>
+                    <ul class="space-y-3 text-huboo-darker1">
+                        <li class="flex items-center"><span class="text-huboo-primary mr-2 font-bold text-xl">•</span> <span data-key="recepcion_bullet_1">Inventario Rápido y Preciso.</span></li>
+                        <li class="flex items-center"><span class="text-huboo-primary mr-2 font-bold text-xl">•</span> <span data-key="recepcion_bullet_2">Almacenamiento Optimizado.</span></li>
+                        <li class="flex items-center"><span class="text-huboo-primary mr-2 font-bold text-xl">•</span> <span data-key="recepcion_bullet_3">Tus productos, listos para enviar.</span></li>
+                    </ul>
+                </div>
+                <div class="p-4 bg-huboo-mid1 rounded-2xl shadow-xl shadow-huboo-mid1/50 transition duration-500 hover:scale-[1.02] reveal">
+                    <img src="recep.png"
+                        alt="Manos recibiendo una caja"
+                        class="w-full h-auto rounded-xl object-cover transform transition duration-500 hover:rotate-1"
+                        onerror="this.onerror=null;this.src='https://placehold.co/800x600/6b4cbb/eee6f8?text=RECEPCION+DE+PRODUCTOS'"
+                    >
+                    <p class="mt-3 text-sm text-white text-center" data-key="recepcion_description">Tus productos están en buenas manos desde el primer momento.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. SECCIÓN PREPARACIÓN -->
+        <section id="preparacion" class="py-20 md:py-32 bg-huboo-mid2">
+            <div class="container px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center text-white">
+                <div class="p-4 bg-huboo-darker2 rounded-2xl shadow-xl shadow-huboo-darker2/50 transition duration-500 hover:scale-[1.02] order-2 md:order-1 reveal">
+                    <img src="prepa.png"
+                        alt="Caja encintada con cinta personalizada y efecto mágico"
+                        class="w-full h-auto rounded-xl object-cover transform transition duration-500 hover:rotate-[-1deg]"
+                        onerror="this.onerror=null;this.src='https://placehold.co/800x600/342458/58c4c8?text=PREPARACION+PERSONALIZADA'"
+                    >
+                    <p class="mt-3 text-sm text-huboo-accent text-center" data-key="preparacion_description">Unboxing de calidad, como si lo hicieras tú mismo.</p>
+                </div>
+                <div class="order-1 md:order-2 reveal">
+                    <h2 class="text-4xl font-extrabold text-huboo-accent mb-6" data-key="preparacion_title">Preparación Personalizada</h2>
+                    <p class="text-lg text-huboo-light mb-6" data-key="preparacion_subtitle_1">
+                        Sabemos que cada marca es única. Personalizamos completamente la preparación de tus pedidos: desde el material de empaque hasta las notas de agradecimiento.
+                    </p>
+                    <p class="text-lg text-huboo-light mb-6" data-key="preparacion_subtitle_2">
+                        Además, mantienes una COMUNICACION DIRECTA con el equipo de tu Hub, eliminando errores y asegurando que cada paquete se sienta 100% tuyo.
+                    </p>
+                    <a href="#" class="inline-block border-2 border-huboo-accent text-huboo-accent py-2 px-6 text-base font-semibold rounded-full hover:bg-huboo-accent hover:text-white transition duration-300 transform hover:shadow-lg" data-key="preparacion_cta">
+                        Conoce a tu Hubber
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. SECCIÓN ENVÍO -->
+        <section id="envio" class="py-20 md:py-32 bg-huboo-light">
+            <div class="container px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="reveal">
+                    <h2 class="text-4xl font-extrabold text-huboo-darker2 mb-6" data-key="envio_title">El Mejor Envío y Seguimiento</h2>
+                    <p class="text-lg text-huboo-darker1 mb-6" data-key="envio_subtitle_1">
+                        Elegimos el mejor transportista para cada cliente, garantizando la velocidad y el costo óptimo.
+                    </p>
+                    <p class="text-lg text-huboo-darker1 mb-6" data-key="envio_subtitle_2">
+                        Toda la información de envío, incluyendo el SEGUIMIENTO EN TIEMPO REAL, se actualiza de forma automática en tu Dashboard y en la plataforma de tu cliente, mejorando su experiencia post-compra.
+                    </p>
+                    <div class="flex items-center space-x-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-huboo-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c1.657 0 3 1.343 3 3v5c0 1.657-1.343 3-3 3s-3-1.343-3-3v-5c0-1.657 1.343-3 3-3zM7 11h10M4 11h2M18 11h2M12 4v2M12 18v2"/>
+                        </svg>
+                        <span class="text-xl font-semibold text-huboo-accent" data-key="envio_tracking">Tracking en Tiempo Real</span>
+                    </div>
+                </div>
+                <div class="p-4 bg-huboo-accent rounded-2xl shadow-xl shadow-huboo-accent/50 transition duration-500 hover:scale-[1.02] reveal">
+                    <img src="envio.png"
+                        alt="Paquete siendo enviado con GPS"
+                        class="w-full h-auto rounded-xl object-cover transform transition duration-500 hover:scale-[1.01]"
+                        onerror="this.onerror=null;this.src='https://placehold.co/800x600/58c4c8/141314?text=ENVIO+Y+TRACKING'"
+                    >
+                    <p class="mt-3 text-sm text-huboo-dark text-center" data-key="envio_description">Entrega óptima y transparente.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Pie de Página -->
+    <footer class="bg-huboo-dark py-8 text-center">
+        <div class="container px-6">
+            <p href="https://www.linkedin.com/in/nicolasjuancoronel/" class="text-huboo-mid1 text-sm">&copy; 2023 Huboo. Soluciones de Fulfilment. <span data-key="footer_contact">Contactar con Nicolas Coronel</span></p>
+        </div>
+    </footer>
+
+    <script>
+        // Sistema de traducción mejorado
+        const translations = {
+            es: {
+                'page_title': 'Huboo - Logística de E-commerce Simplificada',
+                'nav_inicio': 'Inicio',
+                'nav_integracion': 'Integración',
+                'nav_recepcion': 'Recepción',
+                'nav_preparacion': 'Preparación',
+                'nav_envio': 'Envío',
+                'nav_casos': 'Casos de Éxito',
+                'hero_title_1': 'Logística',
+                'hero_title_2': 'Inteligente',
+                'hero_subtitle_1': 'proporciona servicios de cumplimiento logístico de principio a fin para negocios de e-commerce. Conectamos tu tienda online a nuestra red de centros, manejando el almacenamiento, la preparación y el envío, permitiéndote',
+                'hero_subtitle_2': 'escalar sin límites.',
+                'hero_cta': 'Ver Nuestro Proceso',
+                'nave_description': 'Nuestro centro logístico, tu nuevo almacén.',
+                'integracion_title': 'Integración Perfecta',
+                'integracion_subtitle': 'Nos integramos sin esfuerzo con las plataformas que ya utilizas. Tus pedidos llegan a nuestro sistema de forma automática, listos para ser procesados.',
+                'integracion_canales_title': 'Canales de Venta',
+                'integracion_flecha_1': 'Pedidos Automáticos',
+                'integracion_flecha_2': 'Información y Stock',
+                'integracion_dashboard_title': 'Tu Dashboard',
+                'integracion_dashboard_subtitle': 'Stock y Tracking en Tiempo Real',
+                'recepcion_title': 'Recepción y Almacenamiento',
+                'recepcion_subtitle': 'Una vez que tus productos llegan a nuestros Hubs, comienza la magia. Nos encargamos de la inspección, el inventario y el almacenamiento seguro, asegurando que todo esté listo para la operación.',
+                'recepcion_bullet_1': 'Inventario Rápido y Preciso.',
+                'recepcion_bullet_2': 'Almacenamiento Optimizado.',
+                'recepcion_bullet_3': 'Tus productos, listos para enviar.',
+                'recepcion_description': 'Tus productos están en buenas manos desde el primer momento.',
+                'preparacion_title': 'Preparación Personalizada',
+                'preparacion_subtitle_1': 'Sabemos que cada marca es única. Personalizamos completamente la preparación de tus pedidos: desde el material de empaque hasta las notas de agradecimiento.',
+                'preparacion_subtitle_2': 'Además, mantienes una COMUNICACION DIRECTA con el equipo de tu Hub, eliminando errores y asegurando que cada paquete se sienta 100% tuyo.',
+                'preparacion_cta': 'Conoce a tu Hubber',
+                'preparacion_description': 'Unboxing de calidad, como si lo hicieras tú mismo.',
+                'envio_title': 'El Mejor Envío y Seguimiento',
+                'envio_subtitle_1': 'Elegimos el mejor transportista para cada cliente, garantizando la velocidad y el costo óptimo.',
+                'envio_subtitle_2': 'Toda la información de envío, incluyendo el SEGUIMIENTO EN TIEMPO REAL, se actualiza de forma automática en tu Dashboard y en la plataforma de tu cliente, mejorando su experiencia post-compra.',
+                'envio_tracking': 'Tracking en Tiempo Real',
+                'envio_description': 'Entrega óptima y transparente.',
+                'footer_contact': 'Contactar con Nicolas Coronel',
+                'upload_text': '📁 Coloca tu imagen aquí<br><small>media/canales.png</small>'
+            },
+            en: {
+                'page_title': 'Huboo - Simplified E-commerce Logistics',
+                'nav_inicio': 'Home',
+                'nav_integracion': 'Integration',
+                'nav_recepcion': 'Receiving',
+                'nav_preparacion': 'Preparation',
+                'nav_envio': 'Shipping',
+                'nav_casos': 'Success Stories',
+                'hero_title_1': 'Smart',
+                'hero_title_2': 'Logistics',
+                'hero_subtitle_1': 'provides end-to-end fulfillment services for e-commerce businesses. We connect your online store to our network of hubs, handling storage, preparation, and shipping, allowing you to',
+                'hero_subtitle_2': 'scale without limits.',
+                'hero_cta': 'View Our Process',
+                'nave_description': 'Our logistics center, your new warehouse.',
+                'integracion_title': 'Perfect Integration',
+                'integracion_subtitle': 'We integrate seamlessly with the platforms you already use. Your orders arrive in our system automatically, ready to be processed.',
+                'integracion_canales_title': 'Sales Channels',
+                'integracion_flecha_1': 'Automatic Orders',
+                'integracion_flecha_2': 'Information & Stock',
+                'integracion_dashboard_title': 'Your Dashboard',
+                'integracion_dashboard_subtitle': 'Stock and Real-Time Tracking',
+                'recepcion_title': 'Receiving and Storage',
+                'recepcion_subtitle': 'Once your products arrive at our Hubs, the magic begins. We take care of inspection, inventory, and secure storage, ensuring everything is ready for operation.',
+                'recepcion_bullet_1': 'Fast and Accurate Inventory.',
+                'recepcion_bullet_2': 'Optimized Storage.',
+                'recepcion_bullet_3': 'Your products, ready to ship.',
+                'recepcion_description': 'Your products are in good hands from the first moment.',
+                'preparacion_title': 'Personalized Preparation',
+                'preparacion_subtitle_1': 'We know that every brand is unique. We completely customize the preparation of your orders: from packaging materials to thank you notes.',
+                'preparacion_subtitle_2': 'Plus, you maintain DIRECT COMMUNICATION with your Hub team, eliminating errors and ensuring every package feels 100% yours.',
+                'preparacion_cta': 'Meet your Hubber',
+                'preparacion_description': 'Quality unboxing, as if you did it yourself.',
+                'envio_title': 'The Best Shipping and Tracking',
+                'envio_subtitle_1': 'We choose the best carrier for each customer, guaranteeing optimal speed and cost.',
+                'envio_subtitle_2': 'All shipping information, including REAL-TIME TRACKING, is automatically updated in your Dashboard and on your client\'s platform, improving their post-purchase experience.',
+                'envio_tracking': 'Real-Time Tracking',
+                'envio_description': 'Optimal and transparent delivery.',
+                'footer_contact': 'Contact Nicolas Coronel',
+                'upload_text': '📁 Place your image here<br><small>media/canales.png</small>'
+            }
+        };
+
+        let currentLang = 'es';
+
+        // Función para cambiar idioma
+        function changeLanguage() {
+            currentLang = currentLang === 'es' ? 'en' : 'es';
+            const langText = document.getElementById('langText');
+            const langFlag = document.getElementById('langFlag');
+            const pageTitle = document.getElementById('page-title');
+            
+            // Actualizar botón de idioma
+            langText.textContent = currentLang === 'es' ? 'ES' : 'EN';
+            langFlag.textContent = currentLang === 'es' ? '🇪🇸' : '🇺🇸';
+            
+            // Actualizar título de la página
+            pageTitle.textContent = translations[currentLang]['page_title'];
+            
+            // Actualizar elementos con data-key
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (translations[currentLang][key]) {
+                    element.innerHTML = translations[currentLang][key].replace(/\n/g, '<br>');
+                }
+            });
+            
+            // Cambiar atributo lang del HTML
+            document.documentElement.lang = currentLang;
+        }
+
+        // Inicializar clases CSS para las imágenes
+        function initImageClasses() {
+            const canalesImg = document.querySelector('#upload-canales img');
+            const dashboardImg = document.querySelector('#upload-dashboard img');
+            
+            // Verificar si las imágenes cargan correctamente
+            if (canalesImg && canalesImg.complete && canalesImg.naturalWidth > 0) {
+                canalesImg.parentElement.classList.add('has-image');
+            }
+            
+            if (dashboardImg && dashboardImg.complete && dashboardImg.naturalWidth > 0) {
+                dashboardImg.parentElement.classList.add('has-image');
+            }
+        }
+
+        // ========================================
+        // CONFIGURACIÓN DE CONTACTO - SIMPLE
+        // ========================================
+        // Configura aquí tus datos de contacto
+        const contactConfig = {
+            whatsapp: "+1234567890", // Cambia por tu número de WhatsApp (incluye código de país)
+            email: "contacto@tuempresa.com" // Cambia por tu email
+        };
+
+        // Función para inicializar los iconos de contacto
+        function initContactIcons() {
+            const whatsappIcon = document.getElementById('whatsapp-icon');
+            const emailIcon = document.getElementById('email-icon');
+
+            // Configurar WhatsApp
+            if (contactConfig.whatsapp && contactConfig.whatsapp !== "34674355737") {
+                const cleanNumber = contactConfig.whatsapp.replace(/\D/g, ''); // Solo números
+                const whatsappUrl = `https://wa.me/${cleanNumber}`;
+                
+                // Hacer clickeable
+                whatsappIcon.style.cursor = 'pointer';
+                whatsappIcon.onclick = () => window.open(whatsappUrl, '_blank');
+                
+                // Agregar atributo de accesibilidad
+                whatsappIcon.setAttribute('title', `Contactar por WhatsApp: ${contactConfig.whatsapp}`);
+                whatsappIcon.setAttribute('aria-label', 'Contactar por WhatsApp');
+            }
+
+            // Configurar Email
+            if (contactConfig.email && contactConfig.email !== "nicolas.coronel@huboo.com" && contactConfig.email.includes('@')) {
+                const emailUrl = `mailto:${contactConfig.email}`;
+                
+                // Hacer clickeable
+                emailIcon.style.cursor = 'pointer';
+                emailIcon.onclick = () => window.location.href = emailUrl;
+                
+                // Agregar atributo de accesibilidad
+                emailIcon.setAttribute('title', `Enviar email a: ${contactConfig.email}`);
+                emailIcon.setAttribute('aria-label', 'Enviar email');
+            }
+        }
+
+        // Inicializar funcionalidad
+        document.addEventListener('DOMContentLoaded', function() {
+            // Menú hamburguesa
+            const menuButton = document.getElementById('menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIconOpen = document.getElementById('menu-icon-open');
+            const menuIconClose = document.getElementById('menu-icon-close');
+            const navLinks = mobileMenu.querySelectorAll('a');
+
+            // Lógica del Botón Hamburguesa
+            menuButton.addEventListener('click', () => {
+                const isMenuOpen = mobileMenu.classList.toggle('hidden');
+                menuIconOpen.classList.toggle('hidden');
+                menuIconClose.classList.toggle('hidden');
+            });
+
+            // Cerrar menú al hacer clic en un enlace (para móvil)
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        menuIconOpen.classList.remove('hidden');
+                        menuIconClose.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Animaciones de Scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.reveal').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Cargar configuración
+            initContactIcons();
+
+            // Event listener para traducción
+            document.getElementById('langToggle').addEventListener('click', changeLanguage);
+
+            // Inicializar clases de imagen
+            initImageClasses();
+        });
+    </script>
+</body>
+</html>
