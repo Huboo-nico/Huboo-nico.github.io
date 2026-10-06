@@ -1,6 +1,38 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <script>
+    /* Polyfill setter for fetch so Chrome extensions can monkey-patch window.fetch without throwing */
+    (function() {
+      try {
+        let _fetch = window.fetch;
+        Object.defineProperty(window, 'fetch', {
+          get() {
+            return _fetch;
+          },
+          set(newFetch) {
+            _fetch = newFetch;
+          },
+          configurable: true,
+          enumerable: true,
+        });
+      } catch (e) {
+        try {
+          let _pFetch = Window.prototype.fetch;
+          Object.defineProperty(Window.prototype, 'fetch', {
+            get() {
+              return _pFetch;
+            },
+            set(newFetch) {
+              _pFetch = newFetch;
+            },
+            configurable: true,
+            enumerable: true,
+          });
+        } catch (e2) {}
+      }
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title id="page-title">Huboo - Logística</title>
