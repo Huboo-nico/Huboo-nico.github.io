@@ -1,0 +1,6 @@
+{
+  "name": "Huboo - Logística",
+  "description": "Solución integral para la logística y fulfillment de tu e-commerce.",
+  "permissions": [],
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
